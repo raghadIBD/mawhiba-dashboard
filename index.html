@@ -222,6 +222,7 @@ html,body{margin:0;padding:0;background:#F6F6F8}
 }
 
 
+.mwx .post .trk iframe.drv{flex:0 0 100%;width:100%;aspect-ratio:9/16;border:0;display:block;background:#111;border-radius:12px}
 </style></head><body>
 
 
@@ -369,7 +370,7 @@ dash.loader('content', { description: 'صفوف تبويب المحتوى الم
     const a = typeof answer === 'string' ? JSON.parse(answer) : answer;
     const v = (a && a.values) || [];
     if (!v.length) throw new Error('Google Sheets returned no values for ' + ((a && a.range) || 'the range'));
-    const names = ['program', 'type', 'text', 'link', 'target_group', 'numbers', 'impressions', 'clicks', 'engagement'];
+    const names = ['program', 'type', 'text', 'link', 'target_group', 'numbers', 'impressions', 'clicks', 'engagement', 'media'];
     const NUM = ['numbers', 'impressions', 'clicks', 'engagement'];
     const rows = v.slice(1).map((r, i) => {
       const o = { row: i + 2 };
@@ -611,7 +612,7 @@ function capt(t){var s=String(t||'').replace(/\r/g,'').replace(/[ \t\u00a0]+\n/g
 function content(p){
   if(!p.post&&!p.sms)return '';
   var h='<div class="sec"><h3 class="sec-h">آخر محتوى منشور</h3><div class="content2">';
-  if(p.post){var q=p.post;h+='<section class="post"><div class="hd">'+ic('msg')+'منشور سوشل ميديا</div>'+(POST_IMG[cur]&&POST_IMG[cur].length?'<div class="art imgs'+(POST_IMG[cur].some(function(u){return typeof u==='object'})?' vid':'')+'"><div class="car"><div class="trk">'+POST_IMG[cur].map(function(u,i){return typeof u==='object'?'<video src="'+u.v+'" poster="'+u.poster+'" controls playsinline preload="metadata"></video>':'<img src="'+u+'" alt="صورة المنشور '+(i+1)+'" draggable="false">'}).join('')+'</div></div>'+(POST_IMG[cur].length>1?'<button class="cb pv" type="button" aria-label="السابق"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="cb nx" type="button" aria-label="التالي"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="cdots">'+POST_IMG[cur].map(function(u,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('')+'</div>':'')+'</div>':'<div class="art"><div>'+PATTERN+'<b>'+esc(q.art)+'</b><span>'+esc(p.name)+'</span></div></div>')+'<div class="tx">'+capt(q.text)+'</div><div style="padding:0 18px 12px"><a class="link" href="'+esc(q.link)+'" target="_blank" rel="noopener">'+ic('link')+esc(q.link.replace('https://',''))+'</a></div>'
+  if(p.post){var q=p.post;h+='<section class="post"><div class="hd">'+ic('msg')+'منشور سوشل ميديا</div>'+(POST_IMG[cur]&&POST_IMG[cur].length?'<div class="art imgs'+(POST_IMG[cur].some(function(u){return u&&u.v})?' vid':'')+'"><div class="car"><div class="trk">'+POST_IMG[cur].map(function(u,i){return (u&&u.d)?'<img src="https://lh3.googleusercontent.com/d/'+u.d+'=w1000" alt="صورة المنشور '+(i+1)+'" draggable="false" onerror="mwDriveFallback(this,\''+u.d+'\')">':(u&&u.v)?'<video src="'+u.v+'" poster="'+u.poster+'" controls playsinline preload="metadata"></video>':'<img src="'+u+'" alt="صورة المنشور '+(i+1)+'" draggable="false">'}).join('')+'</div></div>'+(POST_IMG[cur].length>1?'<button class="cb pv" type="button" aria-label="السابق"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button><button class="cb nx" type="button" aria-label="التالي"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><div class="cdots">'+POST_IMG[cur].map(function(u,i){return '<i'+(i?'':' class="on"')+'></i>'}).join('')+'</div>':'')+'</div>':'<div class="art"><div>'+PATTERN+'<b>'+esc(q.art)+'</b><span>'+esc(p.name)+'</span></div></div>')+'<div class="tx">'+capt(q.text)+'</div><div style="padding:0 18px 12px"><a class="link" href="'+esc(q.link)+'" target="_blank" rel="noopener">'+ic('link')+esc(q.link.replace('https://',''))+'</a></div>'
     +'<div class="mets"><div><small>'+ic('eye')+'الظهور</small><b class="num">'+fmt(q.impressions)+'</b></div><div><small>'+ic('click')+'النقرات</small><b class="num">'+fmt(q.clicks)+'</b></div><div><small>'+ic('heart')+'التفاعل</small><b class="num">'+fmt(q.engagement)+'</b></div></div></section>'}
   if(p.post&&POST_IMG[cur]&&POST_IMG[cur].length>1)mounts.push(function(){var w=document.querySelector('.mwx .art.imgs');if(!w)return;var car=w.querySelector('.car'),trk=w.querySelector('.trk'),n=trk.children.length,dots=[].slice.call(w.querySelectorAll('.cdots i')),k=0;
     function go(i){k=(i+n)%n;trk.style.transform='translateX('+(k*100)+'%)';dots.forEach(function(d,j){d.classList.toggle('on',j===k)})}
@@ -625,7 +626,9 @@ function content(p){
   return h+'</div></div>'
 }
 
-var POST_IMG={tamayuz:['media/tamayuz_1.jpg','media/tamayuz_2.jpg','media/tamayuz_3.jpg','media/tamayuz_4.jpg'],npg:['media/npg_2.jpg'],bebras:[{v:'media/bebras_video.mp4',poster:'media/bebras_poster.jpg'}]};
+var POST_IMG0=null,POST_IMG={tamayuz:['media/tamayuz_1.jpg','media/tamayuz_2.jpg','media/tamayuz_3.jpg','media/tamayuz_4.jpg'],npg:['media/npg_2.jpg'],bebras:[{v:'media/bebras_video.mp4',poster:'media/bebras_poster.jpg'}]};
+function driveIds(s){if(!s)return [];return String(s).split(/[;\n,]+/).map(function(x){x=x.trim();var m=x.match(/\/d\/([\w-]{20,})/)||x.match(/[?&]id=([\w-]{20,})/)||x.match(/^([\w-]{25,})$/);return m?m[1]:null}).filter(Boolean)}
+window.mwDriveFallback=function(img,id){var f=document.createElement('iframe');f.src='https://drive.google.com/file/d/'+id+'/preview';f.allow='autoplay';f.setAttribute('allowfullscreen','');f.className='drv';img.replaceWith(f)};
 var KEYS={tamayuz:'التميز',npg:'الكشف عن الموهوبين',bebras:'بيبراس',m360:'موهبة 360'};
 var ICON_OF={tamayuz:'cap',npg:'sparkle',bebras:'code',m360:'bulb'};
 var REG_DEFS=[['حفظوا النموذج ولم يرسلوه','saved_not_submitted','file','c-gold'],['مؤكد الدفع','paid_confirmed','card','c-teal'],['المقاعد المدعومة','supported_seats','flag','c-purple'],['التسجيل المدعوم','supported_registration','check','c-teal'],['المسجلون عن بعد','remote_registered','globe','c-gold'],['المدارس المشاركة','participating_schools','school','c-purple'],['الإدارات التعليمية','education_departments','map','c-teal'],['البرامج تحت المظلة','programs_count','flag','c-purple']];
@@ -669,7 +672,7 @@ function buildData(){
     var cs=rowsFor('content',P);
     var sms=cs.filter(function(c){return c.type==='رسالة نصية'}).pop(),post=cs.filter(function(c){return c.type==='منشور سوشل ميديا'}).pop();
     p.sms=sms?{text:sms.text||'',link:firstLink(sms.link),audience:sms.target_group||'',numbers:sms.numbers,clicks:sms.clicks}:null;
-    p.post=post?{text:post.text||'',link:firstLink(post.link),impressions:post.impressions,clicks:post.clicks,engagement:post.engagement,art:p.tagline}:null;
+    p.post=post?{text:post.text||'',link:firstLink(post.link),impressions:post.impressions,clicks:post.clicks,engagement:post.engagement,art:p.tagline,media:driveIds(post.media)}:null;
     out.programs[key]=p;
   });
   return out;
@@ -680,6 +683,8 @@ var TABK=['tamayuz','npg','bebras','m360'];
 function curKey(){var k=dash.params().program;return TABK.indexOf(k)>=0?k:'tamayuz'}
 function render(el){
   cur=curKey();var p=DATA.programs[cur],t=timing(p);mounts=[];
+  if(!POST_IMG0)POST_IMG0=JSON.parse(JSON.stringify(POST_IMG));
+  POST_IMG[cur]=(p.post&&p.post.media&&p.post.media.length)?p.post.media.map(function(id){return {d:id}}):POST_IMG0[cur];
   var h='<div class="row2">'+programCard(p,t)+progressCard(p,t)+'</div>'+goals(p)+highlights(p)+funnel(p)+reach(p)+analysis(p,t)+content(p);
   el.innerHTML=h+'<div id="tip" hidden></div>';tip=el.querySelector('#tip');mounts.forEach(function(f){f()})
 }
