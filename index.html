@@ -691,6 +691,10 @@ function buildData(){
       p.goalsKpi=gl.filter(function(g){return g.kind==='مؤشر أداء'}).map(function(g){return [g.item,g.target||'—',g.method||'']});
       p.goalsPrograms=gl.filter(function(g){return g.kind!=='مؤشر أداء'}).map(function(g){var n=Number(String(g.target||'').replace(/,/g,''));var a=Number(String(g.actual==null?'':g.actual).replace(/,/g,''));return [g.item,g.target_group||'',g.period||'',isNaN(n)?null:n,(g.actual==null||String(g.actual).trim()===''||isNaN(a))?null:a]});
     }
+    if(p.registered==null&&p.goalsPrograms&&p.goalsPrograms.some(function(r){return r[4]!=null})){
+      p.registered=sum(p.goalsPrograms.map(function(r){return r[4]}));
+      var tsum=sum(p.goalsPrograms.map(function(r){return r[3]}));if(tsum)p.target=tsum;
+    }
     var cs=rowsFor('content',P);
     var sms=cs.filter(function(c){return c.type==='رسالة نصية'}).pop(),post=cs.filter(function(c){return c.type==='منشور سوشل ميديا'}).pop();
     p.sms=sms?{text:sms.text||'',link:firstLink(sms.link),audience:sms.target_group||'',numbers:sms.numbers,clicks:sms.clicks}:null;
